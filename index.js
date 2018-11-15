@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
-
+const path = require('path')
 const allPlayers = 'SELECT * FROM Players';
 
 let db = new sqlite3.Database('./owdb.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -83,12 +83,13 @@ app.get('/cmpplayer', (req, res) => {
     });
   })
 });
-const path = require('path')
+
+
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, 'client/build')))
+app.use(express.static(path.join(__dirname, '../webapp/build')))
 // Anything that doesn't match the above, send back index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/client/build/index.html'))
+  res.sendFile(path.join(__dirname + '../webapp/build/index.html'))
 })
 
 app.set('port', (process.env.PORT || 4000))
