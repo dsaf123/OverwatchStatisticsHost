@@ -86,11 +86,12 @@ app.get('/cmpplayer', (req, res) => {
 
 
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, './webapp/build')))
+app.use(express.static(path.join(__dirname, '../../webapp/public')))
 // Anything that doesn't match the above, send back index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + './webapp/build/index.html'))
+  res.sendFile(path.join(__dirname + '../../webapp/public/index.html'))
 })
+
 var port = process.env.PORT || 3001
 app.listen(port, () => {
   console.log("Server listening on 4000");
