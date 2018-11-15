@@ -91,8 +91,7 @@ app.use(express.static(path.join(__dirname, '../webapp/build')))
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '../webapp/build/index.html'))
 })
-
-app.set('port', (process.env.PORT || 4000))
-app.listen('port', () => {
+var port = process.env.PORT || 3000
+app.listen(port, () => {
   console.log("Server listening on 4000");
 });
