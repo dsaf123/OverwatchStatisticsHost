@@ -93,6 +93,6 @@ app.get('*', (req, res) => {
 })
 
 var port = process.env.PORT || 3001
-app.listen(port, () => {
-  console.log("Server listening on 4000");
+app.listen(port, "0.0.0.0", () => {
+  console.log("Server listening on " + port);
 });
