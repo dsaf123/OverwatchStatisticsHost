@@ -14,10 +14,6 @@ let db = new sqlite3.Database('./owdb.db', sqlite3.OPEN_READWRITE, (err) => {
 
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('hello world')
-});
-
 app.get('/players', (req, res) => {
   db.all('SELECT * FROM Player', [], (err, rows) => {
     if (err) {
@@ -67,7 +63,18 @@ app.get('/herostats/player', (req, res) => {
 
 app.get('/cmpplayer', (req, res) => {
   const {player1, player2} = req.query;
-  db.all(`Select * FROM (SELECT * FROM PlayedOn as P1 Join (SELECT PlayerId FROM Player WHERE Name='${player1}') where P1.Player=PlayerId) JOIN (SELECT * FROM PlayedOn AS P2 Join (SELECT PlayerId FROM Player WHERE Name='${player2}') where P2.Player=PlayerId) WHERE P1.MatchId=P2.MatchId and P1.MapNumber=P2.MapNumber`, [], (err, rows) => {
+  db.all(`SELECT * FROM
+          (SELECT Hero, Damage as P1Damage, Healing AS P1Healing, Eliminations as P1Elims, Deaths as P1Deaths, Ultimates as P1Ultimates, FinalBlows as P1FinalBlows, Time as P1Time
+            FROM Stats JOIN
+              (SELECT PlayerId FROM Player WHERE Name='${player1}') as p1id
+                WHERE Stats.Player=p1id.PlayerId) AS P1
+          JOIN
+          (SELECT Hero, Damage as P2Damage, Healing AS P2Healing, Eliminations as P2Elims, Deaths as P2Deaths, Ultimates as P2Ultimates, FinalBlows as P2FinalBlows, Time as P2Time
+            FROM Stats as S2 JOIN
+              (SELECT PlayerId FROM Player WHERE Name='${player2}') as p2id
+                WHERE S2.Player=p2id.PlayerId) AS P2
+          WHERE P1.Hero = P2.Hero
+          `, [], (err, rows) => {
     if (err) {
       console.error(err.message);
     }
@@ -76,7 +83,7 @@ app.get('/cmpplayer', (req, res) => {
     });
   })
 });
-
-app.listen(8080, () => {
+app.set('port', (process.env.PORT || 4000))
+app.listen('port', () => {
   console.log("Server listening on 4000");
 });
