@@ -5,11 +5,10 @@ const app = express();
 const path = require('path')
 const allPlayers = 'SELECT * FROM Players';
 
-let db = new sqlite3.Database(__dirname + "/owdb.db", sqlite3.OPEN_READWRITE, (err) => {
+let db = new sqlite3.Database('./owdb.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
   }
-  console.log(__dirname + "/owdb.db")
   console.log('Connected to the database.');
 });
 
@@ -93,7 +92,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '../../webapp/public/index.html'))
 })
 
-var port = process.env.PORT || 3001
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080
 app.listen(port, "0.0.0.0", () => {
   console.log("Server listening on " + port);
 });
